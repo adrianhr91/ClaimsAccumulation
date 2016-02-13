@@ -11,6 +11,8 @@ namespace CA.App
         static void Main(string[] args)
         {
             var data = Parser.ParseClaimsData();
+
+            var values = data.AccumulateValues("House");
         }
     }
 }

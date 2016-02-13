@@ -12,6 +12,33 @@ namespace CA.Domain.Models
         {
             Products = new List<Product>();
         }
+        public int EarliestOriginYear
+        {
+            get
+            {
+                return Products
+                    .Min(prod => prod.Claims
+                        .Min(claim => claim.OriginYear));
+            }
+        }
+
+        public int LatestDevelopmentYear
+        {
+            get
+            {
+                return Products
+                    .Max(prod => prod.Claims
+                        .Max(claim => claim.OriginYear));
+            }
+        }
+
+        public int TotalDevelopmentYears
+        {
+            get
+            {
+                return LatestDevelopmentYear - EarliestOriginYear + 1;
+            }
+        }
 
         public void AddDevelopment(string productName, Product.Claim claim)
         {
@@ -38,6 +65,59 @@ namespace CA.Domain.Models
             product.Claims.Add(claim);
 
             Products.Add(product);
+        }
+
+        public List<decimal> AccumulateValues(string productName)
+        {
+            var values = new List<decimal>();
+            var product = Products
+                .FirstOrDefault(prod => prod.ProductName == productName);
+            var claimsByOriginYear = GroupClaimsByOriginYear(product);
+
+            for (int originYear = EarliestOriginYear; originYear < EarliestOriginYear + TotalDevelopmentYears; originYear++)
+            {
+                var claimsForOriginYear = claimsByOriginYear
+                    .FirstOrDefault(group => group.Key == originYear).Value;
+
+                decimal accumulatedValue = 0;
+
+                for (int developmentYear = originYear;
+                    developmentYear < originYear + (LatestDevelopmentYear - originYear + 1);
+                    developmentYear++)
+                {
+                    var claim = claimsForOriginYear
+                        .FirstOrDefault(c => c.DevelopmentYear == developmentYear);
+
+                    if (claim != null)
+                    {
+                        accumulatedValue += claim.IncrementalValue;
+                    }
+
+                    values.Add(accumulatedValue);
+                }
+            }
+
+            return values;
+        }
+
+        private Dictionary<int, List<Product.Claim>> GroupClaimsByOriginYear(Product product)
+        {
+            var claimsByOriginYear = product.Claims
+                    .GroupBy(prod => prod.OriginYear)
+                    .ToDictionary(group => group.Key, group => group.ToList());
+
+            // Generate missing years
+            for (int originYear = EarliestOriginYear; originYear < EarliestOriginYear + TotalDevelopmentYears; originYear++)
+            {
+                bool hasClaimsForYear = claimsByOriginYear.Any(group => group.Key == originYear);
+
+                if (!hasClaimsForYear)
+                {
+                    claimsByOriginYear.Add(originYear, new List<Product.Claim>());
+                }
+            }
+
+            return claimsByOriginYear;
         }
     }
 }
