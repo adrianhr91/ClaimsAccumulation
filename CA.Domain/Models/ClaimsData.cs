@@ -28,7 +28,7 @@ namespace CA.Domain.Models
             {
                 return Products
                     .Max(prod => prod.Claims
-                        .Max(claim => claim.OriginYear));
+                        .Max(claim => claim.DevelopmentYear));
             }
         }
 
