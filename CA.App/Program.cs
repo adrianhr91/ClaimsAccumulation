@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CA.App
 {
@@ -16,8 +12,8 @@ namespace CA.App
 
             foreach (var product in data.Products)
             {
-                var accumulatedValues = data.AccumulateValues(product.ProductName);
-                Console.WriteLine(String.Join(",", accumulatedValues));
+                var accumulatedValues = data.AccumulateValues(product.Name);
+                Console.WriteLine($"{product.Name} " + String.Join(",", accumulatedValues));
             }
         }
     }

@@ -43,7 +43,7 @@ namespace CA.Domain.Models
         public void AddDevelopment(string productName, Product.Claim claim)
         {
 
-            if (Products.Any(prod => prod.ProductName == productName))
+            if (Products.Any(prod => prod.Name == productName))
             {
                 UpdateProduct(productName, claim);
             }
@@ -55,7 +55,7 @@ namespace CA.Domain.Models
 
         private void UpdateProduct(string productName, Product.Claim claim)
         {
-            var product = Products.Single(prod => prod.ProductName == productName);
+            var product = Products.Single(prod => prod.Name == productName);
             product.Claims.Add(claim);
         }
 
@@ -70,7 +70,7 @@ namespace CA.Domain.Models
         public List<decimal> AccumulateValues(string productName)
         {
             var values = new List<decimal>();
-            var product = Products.FirstOrDefault(prod => prod.ProductName == productName);
+            var product = Products.FirstOrDefault(prod => prod.Name == productName);
             var claimsByOriginYear = GroupClaimsByOriginYear(product);
 
             // iterate origin years

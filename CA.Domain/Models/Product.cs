@@ -5,12 +5,12 @@ namespace CA.Domain.Models
 {
     public class Product
     {
-        public string ProductName { get; private set; }
+        public string Name { get; private set; }
         public List<Claim> Claims { get; private set; }
 
         public Product(string productName)
         {
-            ProductName = productName;
+            Name = productName;
             Claims = new List<Claim>();
         }
 
