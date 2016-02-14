@@ -12,7 +12,13 @@ namespace CA.App
         {
             var data = Parser.ParseClaimsData();
 
-            var values = data.AccumulateValues("House");
+            Console.WriteLine($"{data.EarliestOriginYear} {data.TotalDevelopmentYears}");
+
+            foreach (var product in data.Products)
+            {
+                var accumulatedValues = data.AccumulateValues(product.ProductName);
+                Console.WriteLine(String.Join(",", accumulatedValues));
+            }
         }
     }
 }

@@ -70,10 +70,10 @@ namespace CA.Domain.Models
         public List<decimal> AccumulateValues(string productName)
         {
             var values = new List<decimal>();
-            var product = Products
-                .FirstOrDefault(prod => prod.ProductName == productName);
+            var product = Products.FirstOrDefault(prod => prod.ProductName == productName);
             var claimsByOriginYear = GroupClaimsByOriginYear(product);
 
+            // iterate origin years
             for (int originYear = EarliestOriginYear; originYear < EarliestOriginYear + TotalDevelopmentYears; originYear++)
             {
                 var claimsForOriginYear = claimsByOriginYear
@@ -81,6 +81,7 @@ namespace CA.Domain.Models
 
                 decimal accumulatedValue = 0;
 
+                // iterate development years for origin year
                 for (int developmentYear = originYear;
                     developmentYear < originYear + (LatestDevelopmentYear - originYear + 1);
                     developmentYear++)
@@ -107,7 +108,7 @@ namespace CA.Domain.Models
                     .ToDictionary(group => group.Key, group => group.ToList());
 
             // Generate missing years
-            for (int originYear = EarliestOriginYear; originYear < EarliestOriginYear + TotalDevelopmentYears; originYear++)
+            for (int originYear = EarliestOriginYear; originYear < LatestDevelopmentYear; originYear++)
             {
                 bool hasClaimsForYear = claimsByOriginYear.Any(group => group.Key == originYear);
 
